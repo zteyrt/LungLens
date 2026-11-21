@@ -1,28 +1,99 @@
-﻿# LungLens
+# LungLens | 肺结节 CT 检测研究项目
 
-Lung nodule detection from 3D chest CT scans.
+基于 **LUNA16 胸部 CT** 的肺结节候选检测与假阳性抑制实验。项目包含 CT 预处理、YOLO 二维检测、跨切片三维候选合并、3D CNN 候选复核、FROC 评估及误检/漏检分析。
 
-## Features
+> **研究与课程项目，非医疗器械。** 所有指标均为实验结果，不可用于临床诊断。仓库不包含原始医学影像、标注数据副本或模型权重。
 
-- LUNA16 CT preprocessing
-- YOLO-based nodule detection
-- 3D candidate merging
-- False-positive reduction experiments
-- FROC evaluation and error analysis
+## 项目进度
 
-## Current status
+当前主要版本为 **YOLO V5**：在 V4.1 权重基础上，使用扩充后的训练病例微调，并在原先固定的 11 例验证 CT 上评估。
 
-V5 validation results on 11 CT scans:
-- Sensitivity: 79.55%
-- False positives per scan: 3.455
-- Detected nodules: 35 / 44
+| 指标 | V4.1 基线 | V5（验证集） |
+|---|---:|---:|
+| 验证 CT | 11 | 11 |
+| 参考结节 | 44 | 44 |
+| TP / FN | 33 / 11 | 35 / 9 |
+| 结节级敏感度（≤4 FP/scan） | 75.00% | **79.55%** |
+| FP/scan | 3.182 | **3.455** |
 
-These are validation results, not independent test or clinical results.
+V5 的 FROC 操作点为 `min_slices=2`、候选得分阈值约 `0.413006`；应用了项目实现的 LUNA16 排除标注处理。上述结果是 **验证集上扫描阈值后选出的最佳观察操作点**，不是独立测试集成绩，也不是 LUNA16 官方评估脚本的完整复现。V5 完整 CT 候选生成曾发生一次 NMS 超时警告；正式比较前仍需排除其影响。任务开发目标为 **敏感度 ≥85%，同时 FP/scan ≤4**，目前尚未达标。
 
-## Dataset
+在同一组 V5 二维验证图片（263 张、253 个标签框，`batch=1`）上：
 
-LUNA16. Raw medical images are not included in this repository.
+| 指标 | V4.1 | V5 |
+|---|---:|---:|
+| Precision | 79.11% | 81.44% |
+| Recall | 42.29% | 49.41% |
+| mAP50 | 49.55% | 57.16% |
+| mAP50-95 | 23.74% | 25.94% |
 
-## Requirements
+**二维 YOLO Recall 不等同于完整 CT 结节级敏感度。**
 
-Python 3.12 and a compatible PyTorch/CUDA environment.
+## 工作流程
+
+```text
+LUNA16 (.mhd/.raw + annotations.csv)
+        │
+        ├── 病例级 train / val / test 划分
+        │
+        └── HU 肺窗转换、球形截面近似弱标注、阴性切片采样
+                      │
+                 YOLO 检测
+                      │
+             跨切片 3D 候选合并
+                      │
+          排除标注处理 + FROC 评估
+                      │
+          漏检诊断 / 假阳性分析
+                      └── 3D CNN 假阳性抑制探索（目前未成为最佳方案）
+```
+
+## 仓库布局
+
+- `scripts/`：历史数据处理、训练、推理、评估、诊断脚本；当前保留各阶段实现以便溯源。
+- `docs/setup.md`：环境安装、数据目录及本地路径说明。
+- `docs/pipeline.md`：推荐运行顺序与脚本索引。
+- `docs/experiments.md`：关键实验结果、指标口径和局限。
+- `requirements.txt`：第三方依赖列表（非锁定环境）。
+
+> 代码目前以 **Windows 本机路径**运行：项目目录示例为 `D:\肺结节模型训练`，数据目录示例为 `E:\LungLens_Data`。直接 clone 到其他位置后不能保证开箱即用；在运行前应按 `docs/setup.md` 核对脚本中的路径常量及外部数据文件。
+
+## 快速开始（Windows PowerShell）
+
+```powershell
+# 1. 克隆仓库
+git clone https://github.com/zteyrt/LungLens.git
+cd LungLens
+
+# 2. 建立环境
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+
+# 3. 按你的 CUDA / GPU 环境先安装匹配的 PyTorch + torchvision
+# 参见 https://pytorch.org/get-started/locally/
+
+# 4. 安装其余依赖
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+取得符合其授权要求的 LUNA16 数据、准备 `annotations.csv`，并检查脚本路径后，参考 [`docs/pipeline.md`](docs/pipeline.md) 执行构建、微调与评估。**不要直接执行全流程；部分实验脚本依赖早期版本中间产物或预训练权重。**
+
+## 数据与隐私
+
+原始 CT、生成的切片、标注副本、训练权重、虚拟环境和实验缓存不随仓库分发。获取及使用 LUNA16 数据应遵循数据集的官方使用条款；如使用第三方镜像，需自行核对来源、完整性和许可。无参考结节标注的切片 **不等于临床证实正常**。
+
+## 限制和后续工作
+
+- 当前二维框由结节中心和直径进行球形截面近似，属于**弱标注**，不是真实分割轮廓。
+- 固定的 11 例验证 CT 被用于模型选择和阈值分析；独立 7 例 Test 尚需最终锁定方案后评估。
+- 排除标注及候选匹配属于项目自实现流程，并非官方 LUNA16 FROC 全量复刻。
+- 部分脚本仍使用绝对路径、历史版本目录及单独的运行参数；计划逐步统一配置。
+- 3D CNN 曾在内部候选分类上表现不错，但整例 CT FROC 未优于直接使用 YOLO；请勿将它当作已验证的性能提升。
+
+## 开发状态
+
+活跃开发中。当前优先事项是统一候选诊断与评估口径、复核 NMS 超时影响、改善低置信度真结节与假阳性的排序。
+
+## 许可证
+
+**尚未添加开源许可证。** 仓库公开可读不代表自动授予第三方修改、再分发或商业使用权限。项目成员应确认代码归属后再选择许可证；数据集许可另行适用。

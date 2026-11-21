@@ -1,0 +1,13 @@
+# Non-locking project dependencies; exact reproducibility needs a pinned environment.
+# Install a compatible PyTorch / torchvision build for your GPU first:
+# https://pytorch.org/get-started/locally/
+# Tested local setup used Python 3.12, torch 2.9.1+cu128, torchvision 0.24.1+cu128.
+# torch and torchvision deliberately omitted to avoid unintended CUDA replacement.
+
+numpy
+scipy
+SimpleITK
+Pillow
+matplotlib
+ultralytics
+huggingface_hub

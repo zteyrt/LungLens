@@ -1,22 +1,24 @@
-﻿# Python
+# Python
 .venv/
 venv/
 __pycache__/
-*.pyc
+*.py[cod]
 .pytest_cache/
+*.egg-info/
 
-# Medical data
+# Medical data and generated datasets
 data/
 datasets/
 raw/
 processed/
+annotations/
 *.raw
 *.mhd
 *.dcm
 *.nii
 *.nii.gz
 
-# Models and experiments
+# Experiments and model artifacts
 runs/
 weights/
 *.pt
@@ -24,6 +26,11 @@ weights/
 *.ckpt
 *.onnx
 *.cache
+*.part
+
+# Hugging Face caches / temporary files
+hf_cache/
+.cache/
 
 # Credentials
 .env
@@ -34,8 +41,9 @@ weights/
 *token*
 *secret*
 
-# System and IDE
+# Local tools, IDE, OS
 .vscode/
 .idea/
+_tools/
 Thumbs.db
 .DS_Store
