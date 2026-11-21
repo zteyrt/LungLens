@@ -18,9 +18,7 @@ import numpy as np
 import torch
 from ultralytics import YOLO
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DATA_ROOT = Path(r"E:\LungLens_Data\processed\yolo_v5_dataset")
-CANONICAL_SPLIT = Path(r"E:\LungLens_Data\processed\yolo_v5\case_split.csv")
+from lunglens_paths import PROJECT_ROOT, DATA_ROOT, CANONICAL_SPLIT
 DATA_YAML = DATA_ROOT / "dataset.yaml"
 PRETRAINED = PROJECT_ROOT / "runs" / "yolo_v41_baseline" / "weights" / "best.pt"
 RUN_PROJECT = PROJECT_ROOT / "runs"

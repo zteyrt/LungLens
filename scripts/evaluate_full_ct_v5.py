@@ -16,13 +16,9 @@ from ultralytics import YOLO
 # 1. 配置
 # ==================================================
 
-PROJECT = Path(r"D:\肺结节模型训练")
-RAW = Path(r"E:\LungLens_Data\raw")
-ANNOTATIONS = Path(
-    r"E:\LungLens_Data\annotations\annotations.csv"
-)
-SPLIT_CSV = Path(
-    r"E:\LungLens_Data\processed\yolo_v41\case_split.csv"
+from lunglens_paths import (
+    PROJECT_ROOT as PROJECT, RAW_ROOT as RAW,
+    ANNOTATIONS_FILE as ANNOTATIONS, LEGACY_EVAL_SPLIT as SPLIT_CSV,
 )
 
 WEIGHT = (

@@ -97,3 +97,7 @@ py -3.12 -m venv .venv
 ## 许可证
 
 **尚未添加开源许可证。** 仓库公开可读不代表自动授予第三方修改、再分发或商业使用权限。项目成员应确认代码归属后再选择许可证；数据集许可另行适用。
+
+## 可配置路径（V5）
+
+V5 核心脚本支持 `LUNGLENS_DATA_ROOT`、`LUNGLENS_PROJECT_ROOT` 和 `LUNGLENS_EVAL_SPLIT` 环境变量；默认路径兼容原有 Windows 环境。详见 [`docs/configuration.md`](docs/configuration.md)。其他历史脚本仍可能包含绝对路径。

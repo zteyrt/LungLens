@@ -4,16 +4,13 @@ from collections import defaultdict, Counter
 import csv
 import math
 
-PROJECT = Path(r"D:\肺结节模型训练")
+from lunglens_paths import (
+    PROJECT_ROOT as PROJECT, ANNOTATIONS_DIR as ANN_DIR,
+    ANNOTATIONS_FILE as ANN, EXCLUDED_FILE as EXCLUDED,
+    LEGACY_EVAL_SPLIT as SPLIT_FILE,
+)
 BASE = PROJECT / "runs/full_ct_v5_val_v1"
 OUT = PROJECT / "runs/full_ct_v5_excluded_v1"
-
-ANN_DIR = Path(r"E:\LungLens_Data\annotations")
-ANN = ANN_DIR / "annotations.csv"
-EXCLUDED = ANN_DIR / "annotations_excluded.csv"
-SPLIT_FILE = Path(
-    r"E:\LungLens_Data\processed\yolo_v41\case_split.csv"
-)
 
 CANDIDATES_FILE = BASE / "candidates_3d.csv"
 

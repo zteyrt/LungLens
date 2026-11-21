@@ -1,8 +1,8 @@
-﻿from pathlib import Path
+from pathlib import Path
 from collections import Counter
 import csv
 
-root = Path(r"E:\LungLens_Data")
+from lunglens_paths import LUNA_ROOT as root
 raw = root / "raw"
 old = root / "processed/yolo_v41/case_split.csv"
 out = root / "processed/yolo_v5/case_split.csv"

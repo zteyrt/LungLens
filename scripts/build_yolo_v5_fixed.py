@@ -21,10 +21,7 @@ from PIL import Image
 # 结节框为球形截面近似弱标注，不是真实病灶轮廓。
 # ============================================================
 
-ROOT = Path(r"E:\LungLens_Data")
-RAW_ROOT = ROOT / "raw"
-ANN_FILE = ROOT / "annotations" / "annotations.csv"
-SPLIT_FILE = ROOT / "processed" / "yolo_v5" / "case_split.csv"
+from lunglens_paths import LUNA_ROOT as ROOT, RAW_ROOT, ANNOTATIONS_FILE as ANN_FILE, CANONICAL_SPLIT as SPLIT_FILE
 
 OUTPUT = ROOT / "processed" / "yolo_v5_dataset"
 STAGING = ROOT / "processed" / "yolo_v5_dataset_building"
