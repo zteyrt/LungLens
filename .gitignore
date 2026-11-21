@@ -47,3 +47,13 @@ hf_cache/
 _tools/
 Thumbs.db
 .DS_Store
+
+# Local update and backup files
+LungLens_GitHub_Improvement_Pack.zip
+README.before_update.md
+gitignore.before_update.txt
+_github_update/
+
+# Other local workspaces
+evaluation/
+projects/
