@@ -1,0 +1,41 @@
+﻿# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Medical data
+data/
+datasets/
+raw/
+processed/
+*.raw
+*.mhd
+*.dcm
+*.nii
+*.nii.gz
+
+# Models and experiments
+runs/
+weights/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.cache
+
+# Credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*token*
+*secret*
+
+# System and IDE
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
